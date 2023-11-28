@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script th:src="@{/js/stomp.min.js}"></script>
+    <script th:src="@{/js/sockjs.min.js}"></script>
 
     <title>WebRTC 화상 채팅</title>
 </head>
@@ -24,13 +25,6 @@
     const remoteVideo = document.getElementById('remoteVideo');
     const startButton = document.getElementById('startButton');
     const stopButton = document.getElementById('stopButton');
-
-    const client = new StompJs.client({
-        brokerURL : "ws://localhost:8080/ws",
-        heartbeatIncoming: 3000,
-        heartbeatOutgoing: 3000,
-        reconnectDelay: 5000
-    });
 
     startButton.addEventListener('click', (event) =>{
         start(true, true);
@@ -64,7 +58,18 @@
 
             // SDP 제안 전송
             // 이 부분에서는 자신의 서버 또는 시그널링 서버를 사용하여 SDP를 전송해야 합니다.
-
+            let socket = new SockJS('/ws');
+            let stompSocket = Stomp.over(socket);
+            stompSocket.debug = null;
+            stompSocket.connect({}, function (data) {
+                console.log('소켓 연결');
+                stompSocket.subscribe('/topic/room', function (response) {
+                });
+            }, function(message){
+                console.log('Socket Connection failed, Retrying...');
+                objValueReceiveId = generateUUID();                 //id 새로발급후 재시도
+                setTimeout(()=>connectStompSubscribe(objValueReceiveId), 1000);       //1초후 연결 재시도
+            });
 
         } catch (error) {
             if(video){
