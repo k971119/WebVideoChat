@@ -20,7 +20,7 @@
     let myStream;
 
     // 일단 소켓 연결을 해봐요
-    var conn = new WebSocket('wss://192.168.0.47:443/socket');
+    var socket = new WebSocket('wss://192.168.0.47/socket');
     // 먼저 RTC객체를 만들어요 구글 stun 서버로 부터 나의 정보를 가져올게요
     var configuration = {
         "iceServers" : [{
@@ -47,12 +47,21 @@
     }
 
     // 소켓이 연결되었을 때 실행할 콜백함수에요
-    conn.onopen = function() {
+    socket.onopen = function() {
         console.log("웹소켓이 연결되었어요");
+        alert('소켓연결됨');
     };
+    socket.onclose = (e) =>{
+        alert('소켓 닫힘');
+        alert(e);
+    }
+    socket.onerror = function (e){
+        alert('소켓 연결 에러');
+        alert(e);
+    }
 
     // 소켓에서 메세지를 받아왔을 때 실행할 콜백함수에요
-    conn.onmessage = async function(msg) {
+    socket.onmessage = async function(msg) {
         var content = JSON.parse(msg.data);
         if (content.event == "offer") {
             console.log("오퍼가 왔어요");
@@ -83,7 +92,7 @@
 
     // 앞으로 소켓으로 메세지를 보낼 땐 이 함수를 쓸 생각이에요
     function send(message) {
-        conn.send(JSON.stringify(message));
+        socket.send(JSON.stringify(message));
     }
 
 
