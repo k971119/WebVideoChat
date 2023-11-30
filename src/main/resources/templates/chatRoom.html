@@ -11,16 +11,19 @@
 <button onclick="createOffer();">오퍼를 생성해요</button><br>
 <div>내 영상이에요</div>
 <video id="myFace" playsinline autoplay width="300" height="300"></video>
+<audio id="myVoice"></audio>
 <br>
 <div>피어의 영상이에요</div>
 <video id="peerFace" playsinline autoplay width="300" height="300"></video>
+<audio id="peerVoice"></audio>
 <script>
     // 미디어와 관련된 변수를 선언해요 myFace는 element를 받고 myStream엔 영상 내용을 담을거에요
     let myFace = document.getElementById("myFace");
-    let myStream;
+    let myVoice = document.getElementById("myVoice");
+    let myVideoStream, myAudioStream;
 
     // 일단 소켓 연결을 해봐요
-    var socket = new WebSocket('wss://192.168.0.47/socket');
+    var socket = new WebSocket('wss://192.168.45.93:443/socket');
     // 먼저 RTC객체를 만들어요 구글 stun 서버로 부터 나의 정보를 가져올게요
     var configuration = {
         "iceServers" : [{
@@ -49,15 +52,12 @@
     // 소켓이 연결되었을 때 실행할 콜백함수에요
     socket.onopen = function() {
         console.log("웹소켓이 연결되었어요");
-        alert('소켓연결됨');
     };
     socket.onclose = (e) =>{
-        alert('소켓 닫힘');
-        alert(e);
+        console.log('소켓 닫힘');
     }
     socket.onerror = function (e){
-        alert('소켓 연결 에러');
-        alert(e);
+        console.log('소켓 연결 에러');
     }
 
     // 소켓에서 메세지를 받아왔을 때 실행할 콜백함수에요
@@ -70,7 +70,10 @@
             myPeerConnection.setRemoteDescription(offer);
             // 받는 쪽에서도 자신의 미디어를 켜줘요
             await getMedia();
-            myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
+            if(video)
+                myVideoStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myVideoStream));
+            if(audio)
+                myAudioStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myAudioStream));
             // 이제 앤서를 보내요
             var answer = await myPeerConnection.createAnswer();
             myPeerConnection.setLocalDescription(answer);
@@ -95,20 +98,28 @@
         socket.send(JSON.stringify(message));
     }
 
-
+    let video = true, audio = true;
 
     //미디어 내용을 받기 시작하는 함수에요
     //미디어와 오디오를 분리할 필요가 있어보임
     async function getMedia() {
         try {
-            myStream = await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: true
+            myVideoStream = await navigator.mediaDevices.getUserMedia({
+                video: video
             });
-            myFace.srcObject = myStream;
+            myFace.srcObject = myVideoStream;
         } catch (e) {
-            alert("미디어를 가져오는 중 에러가 발생했어요");
-            alert(e);
+            console.error("비디오를 가져오는 중 에러 발생");
+            video = false;
+        }
+        try {
+            myAudioStream = await navigator.mediaDevices.getUserMedia({
+                audio: audio
+            });
+            myVoice.srcObject = myAudioStream;
+        } catch (e) {
+            console.error("오디오를 가져오는 중 에러 발생");
+            audio = false;
         }
     }
 
@@ -120,7 +131,10 @@
         await getMedia();
 
         // getMedia에서 가져온 audio, video 트랙을 myPeerConnection에 등록해요
-        myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
+        if(video)
+            myVideoStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myVideoStream));
+        if(audio)
+            myAudioStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myAudioStream));
 
         // RTC객체도 만들었고 나의 미디어도 RTC객체에 담았으니 오퍼를 생성해볼게요
         var offer = await myPeerConnection.createOffer();
