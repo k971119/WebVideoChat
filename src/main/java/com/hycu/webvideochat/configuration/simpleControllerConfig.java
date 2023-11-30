@@ -14,7 +14,7 @@ public class simpleControllerConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("chatRoom");
-        registry.addViewController("/chatRoom").setViewName("chatRoom");
+        registry.addViewController("/chatRoom").setViewName("chatRoom_");
         registry.addViewController("/ios").setViewName("chatRoom_ios");
     }
 }
