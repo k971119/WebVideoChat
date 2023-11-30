@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera and Audio Access</title>
+</head>
+
+<body>
+<video id="video" width="640" height="480" autoplay></video>
+<audio id="audio" autoplay></audio>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Check if the browser supports WebRTC
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Access the user's camera
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    var video = document.getElementById('video');
+                    video.srcObject = stream;
+                })
+                .catch(function (error) {
+                    console.error('Error accessing camera:', error);
+                });
+
+            // Access the user's audio
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function (stream) {
+                    var audio = document.getElementById('audio');
+                    audio.srcObject = stream;
+                })
+                .catch(function (error) {
+                    console.error('Error accessing audio:', error);
+                });
+        } else {
+            alert('WebRTC is not supported in this browser.');
+        }
+    });
+</script>
+</body>
+
+</html>
