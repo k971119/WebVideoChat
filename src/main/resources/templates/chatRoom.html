@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
+    <script>
+        //thymeleaf 변수
+        /*<![CDATA[*/
+        let roomCode = "[[${roomId}]]";
+        /*]]>*/
+    </script>
     <script src="/js/chatroom/chatRoomConnection.js"></script>
 
-    <title>웹알티시해봐요</title>
+    <title th:text="${roomName} + ' 채팅방'"></title>
 </head>
 <body>
-<button id="connect">연결 요청</button><br>
+<button id="connect" onclick="createOffer();">연결 요청</button><br>
 <div>내 영상이에요</div>
 <video id="myFace" playsinline autoplay width="300" height="300"></video>
 <br>
@@ -17,4 +22,8 @@
 <script>
 </script>
 </body>
+<script>
+const myFace = document.getElementById("myFace");
+const peerFace = document.getElementById("peerFace");
+</script>
 </html>

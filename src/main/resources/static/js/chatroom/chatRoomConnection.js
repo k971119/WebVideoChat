@@ -1,15 +1,10 @@
-
-const myFace = document.getElementById("myFace");
-const peerFace = document.getElementById("peerFace");
-
 let myStream;
+/*setTimeout(() => {
+    // 일단 소켓 연결을 해봐요
+    socket = new WebSocket('wss://192.168.45.93:443/socket/'+roomCode);
+})*/
 
-document.getElementById("connect").addEventListener("click",(event) => {
-    createOffer();
-});
-
-// 일단 소켓 연결을 해봐요
-var socket = new WebSocket('wss://192.168.45.93:443/socket');
+var socket = new WebSocket('wss://192.168.45.93:443/socket/'+roomCode);
 // 먼저 RTC객체를 만들어요 구글 stun 서버로 부터 나의 정보를 가져올게요
 var configuration = {
     "iceServers" : [{
@@ -18,6 +13,7 @@ var configuration = {
 }
 var myPeerConnection = new RTCPeerConnection(configuration);
 
+/*이벤트*/
 // 내가 나의 캔디데이트(너가 나를 연결하는 방법들의 후보)를 등록하면(즉 로컬디스크립션을 설정하면)
 myPeerConnection.onicecandidate = event => {
     console.log("icecandidate 전송");
@@ -76,6 +72,7 @@ socket.onmessage = async function(msg) {
         myPeerConnection.addIceCandidate(content.data);
     }
 }
+/*이벤트*/
 
 // 앞으로 소켓으로 메세지를 보낼 땐 이 함수를 쓸 생각이에요
 function send(message) {

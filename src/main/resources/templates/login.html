@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>웹 화상 채팅</title>
+</head>
+<body>
+    <h1>웹 화상 채팅</h1>
+    <span th:each="room:${rooms}">
+        <a th:text="${room.title}" th:href="'/enter/room/'+${room.id}"></a>
+    </span>
+    <div>
+        <input type="text" id="roomId"/>
+        <a id="create-room" href="/create/room">채팅방 생성</a>
+    </div>
+</body>
+<script>
+</script>
+</html>
