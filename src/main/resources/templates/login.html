@@ -2,18 +2,56 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/login.css">
     <title>웹 화상 채팅</title>
 </head>
 <body>
-    <h1>웹 화상 채팅</h1>
-    <span th:each="room:${rooms}">
-        <a th:text="${room.title}" th:href="'/enter/room/'+${room.id}"></a>
-    </span>
     <div>
-        <input type="text" id="roomId"/>
-        <a id="create-room" href="/create/room">채팅방 생성</a>
+        <h1>웹 화상 채팅</h1>
+        <div th:each="room:${rooms}">
+            <div id="chatRoomItem">
+                <a th:text="${room.title}" th:href="'/enter/room/'+${room.id}"></a>
+            </div>
+        </div>
+        <input type="button" id="createRoom" value="채팅방 생성"/>
+        <div id="createPopup" class="popup">
+            <form action="/create/room" method="get">
+                <div class="inline">
+                    <label>채팅방 이름</label>
+                    <input type="text" name="title"/>
+                </div>
+                <div class="inline">
+                    <label>비밀 번호</label>
+                    <input id="roomPass" type="password" name="password" class="password"/>
+                </div>
+                <div class="inline">
+                    <label>비밀번호 확인</label>
+                    <input id="roomPassCheck" type="password" name="password-check" class="password"/>
+                    <label id="passNotSame">비밀번호가 일치하지 않습니다.</label>
+                </div>
+                <div class="inline">
+                    <label>주제</label>
+                    <input type="text" name="content"/>
+                </div>
+                <input type="submit" value="채팅방 생성">
+            </form>
+        </div>
     </div>
 </body>
 <script>
+    document.getElementById("createRoom").addEventListener("click", () => {
+        document.getElementById("createPopup").style.display="block";
+    });
+    let passwordInputs = document.getElementsByClassName("password");
+
+    for (let i = 0; i < passwordInputs.length; i++) {
+        passwordInputs[i].addEventListener("change", () => {
+            if(document.getElementById("roomPass").value !== document.getElementById("roomPassCheck").value){
+                document.getElementById("passNotSame").style.display="block";
+            }else{
+                document.getElementById("passNotSame").style.display="none";
+            }
+        });
+    }
 </script>
 </html>

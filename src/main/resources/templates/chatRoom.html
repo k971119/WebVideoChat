@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/chatRoom.css">
     <script>
         //thymeleaf 변수
         /*<![CDATA[*/
@@ -15,7 +16,7 @@
 <body>
 <button id="connect" onclick="createOffer();">연결 요청</button><br>
 <div>내 영상이에요</div>
-<video id="myFace" playsinline autoplay width="300" height="300"></video>
+<video id="myFace" playsinline autoplay width="300" height="300" muted></video><!--내 영상의 소리는 음소거-->
 <br>
 <div>피어의 영상이에요</div>
 <video id="peerFace" playsinline autoplay width="300" height="300"></video>

@@ -24,8 +24,10 @@ public class ChatRoomController {
     @GetMapping("/create/room")
     public String createRoom(Model model, RoomDTO roomDTO){
 
-        roomDTO.setTitle("테스트 채팅방");
-        roomDTO.setPassword("1234");
+        if(roomDTO.getTitle().isEmpty()) {
+            roomDTO.setTitle("테스트 채팅방");
+            roomDTO.setPassword("1234");
+        }
 
         String roomId = chatRoomManageService.createRoom(roomDTO);
 
