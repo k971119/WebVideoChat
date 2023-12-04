@@ -8,7 +8,7 @@
 <body>
     <div>
         <h1>웹 화상 채팅</h1>
-        <div th:each="room:${rooms}">
+        <div id="chatRoomList" th:each="room:${rooms}">
             <div id="chatRoomItem">
                 <a th:text="${room.title}" th:href="'/enter/room/'+${room.id}"></a>
             </div>
