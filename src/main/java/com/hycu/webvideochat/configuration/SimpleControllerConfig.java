@@ -11,6 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SimpleControllerConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/ios").setViewName("chatRoom_ios");
+        registry.addViewController("/ios").setViewName("chatRoom_ios_test");
     }
 }

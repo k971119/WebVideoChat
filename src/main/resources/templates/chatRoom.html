@@ -37,6 +37,8 @@
         }, 5000);
     });
 
+    history.replaceState({}, null, location.pathname);
+
     function toggleMute() {
         myStream.getAudioTracks()
             .forEach(track => track.enabled = !track.enabled)

@@ -37,17 +37,19 @@ public class ChatRoomController {
         return "chatRoom";
     }
 
-    @GetMapping("/enter/room/{roomId}")
-    public String enterChatRoom(Model model, @PathVariable("roomId") String roomId){
+    @GetMapping("/enter/room/{roomId}/{password}")
+    public String enterChatRoom(Model model, @PathVariable("roomId") String roomId, @PathVariable("password") String password){
         RoomDTO roomDTO = chatRoomManageService.getRoomInfo(roomId);
-        if(roomDTO != null){
-            model.addAttribute("roomId", roomDTO.getId());
-            model.addAttribute("roomName", roomDTO.getTitle());
-        }else {
-            joinController.login(model);
+        if(roomDTO.getPassword().equals(password)) {
+            if (roomDTO != null) {
+                model.addAttribute("roomId", roomDTO.getId());
+                model.addAttribute("roomName", roomDTO.getTitle());
+            } else {
+                joinController.login(model);
+            }
+            return "chatRoom";
         }
-
-        return "chatRoom";
+        return "error/login";
     }
 
     /*@GetMapping("/socket/{roomId}")

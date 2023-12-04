@@ -11,8 +11,6 @@ var configuration = {
 }
 var myPeerConnection = new RTCPeerConnection(configuration);
 
-const devices = await navigator.mediaDevices.enumerateDevices();
-
 /*이벤트*/
 // 캔디데이트(나를 연결하는 방법들의 후보)를 등록(로컬디스크립션을 설정) 이벤트
 myPeerConnection.onicecandidate = event => {
@@ -81,11 +79,18 @@ function send(message) {
     socket.send(JSON.stringify(message));
 }
 
+let consoleDevices;
+
 /**
  * 미디어를 가져와서 VIDEO에 띄운후 전역 STREAM에 담는다
  * @returns {Promise<unknown>}
  */
 async function getMedia() {
+
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    consoleDevices = devices;
+    console.log(devices.filter(device => device.kind === "audioinput"));
+    console.log(devices.filter(device => device.kind === "videoinput"));
     return new Promise(async (resolve, reject) => {
         try {
             await navigator.mediaDevices.getUserMedia({
@@ -94,10 +99,10 @@ async function getMedia() {
             }).catch(error => {
                 console.log('미디오를 가져오는중 에러발생');
             }).then(async stream => {
-                if (stream != undefined) {           //에러나서 stream못 읽어왔을때 오디오만 받아서 비디오는 더미 이미지 스트림으로 넘긴다
+                if (stream != undefined) {
                     myFace.srcObject = stream;
                     myStream = stream;
-                } else {
+                } else {                //캠이없어서 stream못 읽어왔을 때 오디오만 받아서 비디오는 더미로 만들어 스트림으로 넘긴다
                     await navigator.mediaDevices.getUserMedia({audio: true})
                         .then(stream => {
                             // 오디오 스트림에 더미 비디오 트랙을 추가합니다.
@@ -121,15 +126,15 @@ async function getMedia() {
     function getDummyVideoTrack() {
         // 캔버스를 생성하여 더미 이미지를 그립니다.
         const canvas = document.createElement('canvas');
-        // canvas.width = 1280;
-        // canvas.height = 720;
+        canvas.width = 1280;
+        canvas.height = 720;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = 'gray';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 캔버스의 내용을 기반으로 더미 비디오 스트림을 생성합니다.
+        // 캔버스의 내용을 기반으로 더미 비디오 스트림을 생성
         const dummyStream = canvas.captureStream(60);
-        // 더미 비디오 트랙을 반환합니다.
+        // 더미 비디오 트랙을 반환
         return dummyStream.getVideoTracks()[0];
     }
 }
