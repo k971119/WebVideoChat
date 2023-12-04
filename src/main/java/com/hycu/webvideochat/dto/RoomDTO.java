@@ -3,7 +3,7 @@ package com.hycu.webvideochat.dto;
 import lombok.Data;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class RoomDTO {
@@ -12,5 +12,5 @@ public class RoomDTO {
     String password;
     String content;
 
-    Set<WebSocketSession> chatUsers;
+    List<WebSocketSession> chatUsers;
 }

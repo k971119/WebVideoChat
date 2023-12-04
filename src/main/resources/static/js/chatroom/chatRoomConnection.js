@@ -11,6 +11,8 @@ var configuration = {
 }
 var myPeerConnection = new RTCPeerConnection(configuration);
 
+const devices = await navigator.mediaDevices.enumerateDevices();
+
 /*이벤트*/
 // 캔디데이트(나를 연결하는 방법들의 후보)를 등록(로컬디스크립션을 설정) 이벤트
 myPeerConnection.onicecandidate = event => {
@@ -28,6 +30,7 @@ myPeerConnection.addEventListener("track", (event) =>{
 // 소켓 이벤트
 socket.onopen = function() {
     console.log("소켓 연결");
+    createOffer();
 };
 socket.onclose = (e) =>{
     console.log('소켓 닫힘');
@@ -64,6 +67,8 @@ socket.onmessage = async function(msg) {
 
         //상대 클라이언트에 ICECANDIDATE 전송
         myPeerConnection.addIceCandidate(content.data);
+    }else if(content.event == "closed"){
+        myPeerConnection.close();
     }
 }
 /*이벤트*/
