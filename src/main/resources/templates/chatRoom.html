@@ -14,17 +14,42 @@
     <title th:text="${roomName} + ' 채팅방'"></title>
 </head>
 <body>
-<button id="connect" onclick="createOffer();">연결 요청</button><br>
-<div>내 영상이에요</div>
-<video id="myFace" playsinline autoplay width="300" height="300" muted></video><!--내 영상의 소리는 음소거-->
-<br>
-<div>피어의 영상이에요</div>
-<video id="peerFace" playsinline autoplay width="300" height="300"></video>
+<div id="videoContainer">
+    <video id="peerFace" playsinline autoplay width="300" height="300"></video>
+    <video id="myFace" playsinline autoplay width="300" height="300" muted></video><!-- 내 영상의 소리는 음소거 -->
+</div>
+
+<div id="controls">
+    <div class="control-btn" onclick="toggleMute()">음소거</div>
+    <div class="control-btn" onclick="toggleCamera()">카메라 끄기</div>
+    <div class="control-btn" onclick="endCall()">통화 종료</div>
+</div>
+
 <script>
+    const myFace = document.getElementById("myFace");
+    const peerFace = document.getElementById("peerFace");
+    const controls = document.getElementById("controls");
+
+    myFace.addEventListener("click", () => {
+        myFace.classList.toggle("enlarged");
+        setTimeout(() => {
+            myFace.classList.remove("enlarged");
+        }, 5000);
+    });
+
+    function toggleMute() {
+        // Implement mute functionality
+    }
+
+    function toggleCamera() {
+        // Implement camera toggle functionality
+    }
+
+    function endCall() {
+        // Implement end call functionality
+    }
+
+    createOffer();
 </script>
 </body>
-<script>
-const myFace = document.getElementById("myFace");
-const peerFace = document.getElementById("peerFace");
-</script>
 </html>
