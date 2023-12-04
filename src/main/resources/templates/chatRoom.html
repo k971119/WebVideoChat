@@ -38,6 +38,8 @@
     });
 
     function toggleMute() {
+        myStream.getAudioTracks()
+            .forEach(track => track.enabled = !track.enabled)
         if(mute){       //음소거 해제
             document.getElementById("mute-img").src = "/img/muted.png";
         }else{          //음소거
@@ -47,15 +49,23 @@
     }
 
     function toggleCamera() {
-        if(cameraOff){  //카메라 켜기
+        myStream.getVideoTracks()
+        .forEach(track => track.enabled = !track.enabled)
+        if(cameraOff){      //카메라 켜기
             document.getElementById("camera-img").src = "/img/cameraOff.png";
-        }else{          //카메라 끄기
+        }else{              //카메라 끄기
             document.getElementById("camera-img").src = "/img/cameraOn.png";
         }
         cameraOff = !cameraOff;
     }
 
     function endCall() {
+        myPeerConnection.close();
+
+        send({event:'closed'});
+
+        //socket.close();
+        //location.href = "/";
     }
 
     //createOffer();
