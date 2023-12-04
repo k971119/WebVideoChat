@@ -1,4 +1,6 @@
 let myStream;
+let mute = false;
+let cameraOff = false;
 
 var socket = new WebSocket('wss://192.168.45.93:443/socket/'+roomCode);
 // STUN서버 등록 및 RTC 객체생성
@@ -10,7 +12,7 @@ var configuration = {
 var myPeerConnection = new RTCPeerConnection(configuration);
 
 /*이벤트*/
-// 내가 나의 캔디데이트(너가 나를 연결하는 방법들의 후보)를 등록하면(즉 로컬디스크립션을 설정하면)
+// 캔디데이트(나를 연결하는 방법들의 후보)를 등록(로컬디스크립션을 설정) 이벤트
 myPeerConnection.onicecandidate = event => {
     console.log("icecandidate 전송");
     send({
@@ -22,11 +24,6 @@ myPeerConnection.onicecandidate = event => {
 myPeerConnection.addEventListener("track", (event) =>{
     peerFace.srcObject = event.streams[0];
 });
-function handleAddStream(data) {
-    console.log("스트리밍 데이터를 받아왔어요");
-    var peerFace = document.getElementById("peerFace");
-    peerFace.srcObject = data.stream;
-}
 
 // 소켓 이벤트
 socket.onopen = function() {
@@ -41,7 +38,7 @@ socket.onerror = function (e){
 socket.onmessage = async function(msg) {
     var content = JSON.parse(msg.data);
     if (content.event == "offer") {
-        console.log("오퍼가 왔어요");
+        console.log("오퍼 수신");
         //오퍼가 올경우 REMOTE 등록
         var offer = content.data;
         myPeerConnection.setRemoteDescription(offer);
@@ -50,7 +47,7 @@ socket.onmessage = async function(msg) {
         await getMedia();
         myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
 
-        //ANSWER 전송
+        //미디어 데이터를 담아 ANSWER 전송
         var answer = await myPeerConnection.createAnswer();
         myPeerConnection.setLocalDescription(answer);
         console.log("ANSWER 전송");

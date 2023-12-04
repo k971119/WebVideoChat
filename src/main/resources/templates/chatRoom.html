@@ -20,9 +20,9 @@
 </div>
 
 <div id="controls">
-    <div class="control-btn" onclick="toggleMute()">음소거</div>
-    <div class="control-btn" onclick="toggleCamera()">카메라 끄기</div>
-    <div class="control-btn" onclick="endCall()">통화 종료</div>
+    <div class="control-btn" onclick="toggleMute()"><img id="mute-img" src="/img/muted.png"></div>
+    <div class="control-btn" onclick="toggleCamera()"><img id="camera-img" src="/img/cameraOff.png"></div>
+    <div class="control-btn" onclick="endCall()"><img src="/img/callEnd.png"></div>
 </div>
 
 <script>
@@ -38,18 +38,27 @@
     });
 
     function toggleMute() {
-        // Implement mute functionality
+        if(mute){       //음소거 해제
+            document.getElementById("mute-img").src = "/img/muted.png";
+        }else{          //음소거
+            document.getElementById("mute-img").src = "/img/unmuted.png";
+        }
+        mute = !mute;
     }
 
     function toggleCamera() {
-        // Implement camera toggle functionality
+        if(cameraOff){  //카메라 켜기
+            document.getElementById("camera-img").src = "/img/cameraOff.png";
+        }else{          //카메라 끄기
+            document.getElementById("camera-img").src = "/img/cameraOn.png";
+        }
+        cameraOff = !cameraOff;
     }
 
     function endCall() {
-        // Implement end call functionality
     }
 
-    createOffer();
+    //createOffer();
 </script>
 </body>
 </html>
