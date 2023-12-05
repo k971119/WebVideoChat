@@ -20,6 +20,10 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 @EnableWebMvc
 public class ThymeleafConfig implements WebMvcConfigurer {
 
+    /**
+     * 리소스 경로 path 설정
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/js/**")
@@ -30,6 +34,10 @@ public class ThymeleafConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/css/");
     }
 
+    /**
+     * thymeleaf리졸버 설정
+     * @return
+     */
     @Bean
     public ClassLoaderTemplateResolver templateResolver() {
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
@@ -42,6 +50,10 @@ public class ThymeleafConfig implements WebMvcConfigurer {
         return resolver;
     }
 
+    /**
+     * 템플릿 엔진 설정
+     * @return
+     */
     @Bean
     public ISpringTemplateEngine templateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
@@ -49,6 +61,10 @@ public class ThymeleafConfig implements WebMvcConfigurer {
         return engine;
     }
 
+    /**
+     * 뷰 리졸버 설정
+     * @return
+     */
     @Bean
     public ViewResolver viewResolver() {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
@@ -56,6 +72,10 @@ public class ThymeleafConfig implements WebMvcConfigurer {
         return resolver;
     }
 
+    /**
+     * 뷰 리졸버에 타임리프 사용 명시
+     * @param registry
+     */
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();

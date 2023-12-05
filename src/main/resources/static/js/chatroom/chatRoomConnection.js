@@ -2,6 +2,8 @@ let myStream;
 let mute = false;
 let cameraOff = false;
 
+/*서버*/
+//웹소켓 핸드쉐이크
 var socket = new WebSocket('wss://192.168.45.93:443/socket/'+roomCode);
 // STUN서버 등록 및 RTC 객체생성
 var configuration = {
@@ -10,7 +12,10 @@ var configuration = {
     }]
 }
 var myPeerConnection = new RTCPeerConnection(configuration);
+/*서버*/
+function init(myVideo, peerVideo, roomId){
 
+}
 /*이벤트*/
 // 캔디데이트(나를 연결하는 방법들의 후보)를 등록(로컬디스크립션을 설정) 이벤트
 myPeerConnection.onicecandidate = event => {
@@ -60,11 +65,15 @@ socket.onmessage = async function(msg) {
         console.log("ANSWER RECEIVE");
         answer = content.data;
         myPeerConnection.setRemoteDescription(answer);
+
+    //candidate요청
     } else if (content.event == "candidate") {
         console.log("ICECANDIDATE RECEIVE");
 
         //상대 클라이언트에 ICECANDIDATE 전송
         myPeerConnection.addIceCandidate(content.data);
+
+    //RTC close 요청
     }else if(content.event == "closed"){
         myPeerConnection.close();
     }

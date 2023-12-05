@@ -23,9 +23,9 @@ import java.util.Map;
 @Slf4j
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    @Autowired
-    ChatRoomManageService chatRoomManageService;
-
+    /**
+     * Signalling 소켓(싱글톤 적용)
+     */
     @Autowired
     SocketHandler socketHandler;
 
@@ -36,6 +36,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 .addInterceptors(getInter());
     }
 
+    /**
+     * 핸드쉐이크 후 roomId 파라미터 저장 -> 소켓 핸들러
+     * @return
+     */
     private HandshakeInterceptor getInter(){
         return new HandshakeInterceptor() {
             @Override
@@ -47,7 +51,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 String path = serverHttpRequest.getURI().getPath();
                 int index = path.indexOf("/socket");
                 String id = path.substring(index+8);
-                chatRoomManageService.setRoomId(id);
+                socketHandler.getRoomIdThreadLocal().set(id);
                 log.info("ID : " + id);
                 return true;
             }

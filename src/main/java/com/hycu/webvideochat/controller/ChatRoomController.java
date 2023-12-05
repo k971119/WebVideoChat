@@ -24,10 +24,11 @@ public class ChatRoomController {
     @GetMapping("/create/room")
     public String createRoom(Model model, RoomDTO roomDTO){
 
+        /*//테스트용
         if(roomDTO.getTitle().isEmpty()) {
             roomDTO.setTitle("테스트 채팅방");
             roomDTO.setPassword("1234");
-        }
+        }*/
 
         String roomId = chatRoomManageService.createRoom(roomDTO);
 
@@ -37,6 +38,13 @@ public class ChatRoomController {
         return "chatRoom";
     }
 
+    /**
+     * 매칭되는 채팅방 입장
+     * @param model
+     * @param roomId
+     * @param password
+     * @return
+     */
     @GetMapping("/enter/room/{roomId}/{password}")
     public String enterChatRoom(Model model, @PathVariable("roomId") String roomId, @PathVariable("password") String password){
         RoomDTO roomDTO = chatRoomManageService.getRoomInfo(roomId);

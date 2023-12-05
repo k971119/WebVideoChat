@@ -41,15 +41,18 @@
 </body>
 <script>
 
+    //요소
     const roomName = document.getElementById("roomName");
     const password = document.getElementById("roomPass");
     const passwordCheck = document.getElementById("roomPassCheck");
     const passNotSameWarning = document.getElementById("passNotSame");
     const createRoomButton = document.getElementById("popup-createRoom");
 
+    //채팅방 만들기 팝업 생성
     document.getElementById("createRoom").addEventListener("click", () => {
         document.getElementById("createPopup").style.display="block";
     });
+    //팝업 닫기 버튼
     document.getElementById("close").addEventListener("click", () => {
         location.href="/";
     })
@@ -85,7 +88,9 @@
 
     function enterRoom(roomCode){
         let password = prompt("비밀번호를 입력해주세요.");
-        location.href = "/enter/room/"+roomCode+"/"+password
+        if(password != null) {
+            location.href = "/enter/room/" + roomCode + "/" + password
+        }
     }
 
 </script>

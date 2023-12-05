@@ -2,6 +2,8 @@ package com.hycu.webvideochat.configuration;
 
 import com.hycu.webvideochat.dto.RoomDTO;
 import com.hycu.webvideochat.service.ChatRoomManageService;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,9 +25,21 @@ public class SocketHandler extends TextWebSocketHandler {
     @Autowired
     ChatRoomManageService chatRoomManageService ;
 
+    //핸드쉐이크 인터셉터가 roomID를 담아놓음(Thread Safe를 위해서 사용)
+    @Getter
+    private final ThreadLocal<String> roomIdThreadLocal = new ThreadLocal<>();
+
+
+
+    /**
+     * 웹소켓 연결 요청전 처리
+     * @param session   연결요청한 세션
+     * @throws Exception
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        String roomId = chatRoomManageService.getRoomId();
+        //핸드쉐이크 인터셉터단에서 가져온 RoomID
+        String roomId = roomIdThreadLocal.get();
         RoomDTO roomInfo = chatRoomManageService.getRoomInfo(roomId);
         try {
             if (roomInfo.getChatUsers() != null) {
@@ -41,11 +55,17 @@ public class SocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * 웹 소켓 연결 해제전 처리
+     * @param session   연결해제한 소켓 세션
+     * @param status    상태값
+     * @throws Exception
+     */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        String roomId = chatRoomManageService.getRoomId();
-        RoomDTO roomInfo = chatRoomManageService.getRoomInfo(roomId);
+        //닫힐때는 service단의 roomId가 다른채팅방에 진입할경우 변조가능성이 있기 때문에 session값을 통해 roomId를 찾아온다
         String key = getRoomIdByWebSocketSession(chatRoomManageService.getChatRooms() ,session);
+        RoomDTO roomInfo = chatRoomManageService.getRoomInfo(key);
         if(key == null){
             log.info(session.getId() + " 해당 세션이 포함된 채팅방을 찾지못함");
             return;
@@ -57,11 +77,17 @@ public class SocketHandler extends TextWebSocketHandler {
         log.info(session.getId() + " - 끊어짐");
     }
 
+    /**
+     * 웹소켓이 전송한 메시지 같은채팅방 유저에게 전달
+     * @param session   메시지를 전송한 세션
+     * @param message   받은 메세지
+     * @throws Exception
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         log.info("(받은 메세지)" + session.getId()+" : " + message);
         for (WebSocketSession webSocketSession :
-                chatRoomManageService.getRoomInfo(chatRoomManageService.getRoomId()).getChatUsers()) {            //같은 채팅방 유저에게만 보낸다(N:N으로 업그레이드를 고려해서 이렇게 만듬...)
+                chatRoomManageService.getRoomInfo(getRoomIdByWebSocketSession(chatRoomManageService.getChatRooms(),session)).getChatUsers()) {            //같은 채팅방 유저에게만 보낸다(N:N으로 업그레이드를 고려해서 이렇게 만듬...)
             if (webSocketSession.isOpen() && !session.getId().equals(webSocketSession.getId())) {
                 webSocketSession.sendMessage(message);
                 log.info("(보내는메세지)" + webSocketSession.getId()+" : " + message);
