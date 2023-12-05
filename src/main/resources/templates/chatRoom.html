@@ -14,6 +14,7 @@
     <title th:text="${roomName} + ' 채팅방'"></title>
 </head>
 <body>
+<div id="toast">This is a toast message</div>
 <div id="videoContainer">
     <video id="peerFace" playsinline autoplay width="300" height="300"></video>
     <video id="myFace" playsinline autoplay width="300" height="300" muted></video><!-- 내 영상의 소리는 음소거 -->
@@ -43,8 +44,10 @@
         myStream.getAudioTracks()
             .forEach(track => track.enabled = !track.enabled)
         if(mute){       //음소거 해제
+            showToast("음소거 해제");
             document.getElementById("mute-img").src = "/img/muted.png";
         }else{          //음소거
+            showToast("음소거");
             document.getElementById("mute-img").src = "/img/unmuted.png";
         }
         mute = !mute;
@@ -54,20 +57,37 @@
         myStream.getVideoTracks()
         .forEach(track => track.enabled = !track.enabled)
         if(cameraOff){      //카메라 켜기
+            showToast("카메라 켜기");
             document.getElementById("camera-img").src = "/img/cameraOff.png";
         }else{              //카메라 끄기
+            showToast("카메라 끄기");
             document.getElementById("camera-img").src = "/img/cameraOn.png";
         }
         cameraOff = !cameraOff;
     }
 
     function endCall() {
+        showToast("통화 종료");
         myPeerConnection.close();
 
         send({event:'closed'});
 
         //socket.close();
         //location.href = "/";
+    }
+
+    function showToast(msg) {
+        var toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        toast.style.opacity = 1;
+
+        setTimeout(function() {
+            toast.style.opacity = 0;
+            setTimeout(()=>{
+                toast.style.display = 'none';
+            }, 1000);
+        }, 3000); // 3000 milliseconds 후에 숨김
     }
 
     //createOffer();
