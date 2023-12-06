@@ -85,7 +85,7 @@ public class SocketHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        log.info("(받은 메세지)" + session.getId()+" : " + message);
+        log.info("(받은 메세지)" + session.getId()+" : " + message.getPayload());
         for (WebSocketSession webSocketSession :
                 chatRoomManageService.getRoomInfo(getRoomIdByWebSocketSession(chatRoomManageService.getChatRooms(),session)).getChatUsers()) {            //같은 채팅방 유저에게만 보낸다(N:N으로 업그레이드를 고려해서 이렇게 만듬...)
             if (webSocketSession.isOpen() && !session.getId().equals(webSocketSession.getId())) {

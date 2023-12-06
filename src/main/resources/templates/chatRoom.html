@@ -24,12 +24,21 @@
     <div class="control-btn" onclick="toggleMute()"><img id="mute-img" src="/img/muted.png"></div>
     <div class="control-btn" onclick="toggleCamera()"><img id="camera-img" src="/img/cameraOff.png"></div>
     <div class="control-btn" onclick="endCall()"><img src="/img/callEnd.png"></div>
+    <div class="trackChoose" style="display: grid">
+        <select id="audioTrack"></select>
+        <select id="videoTrack"></select>
+    </div>
 </div>
 
 <script>
     const myFace = document.getElementById("myFace");
     const peerFace = document.getElementById("peerFace");
     const controls = document.getElementById("controls");
+    const audioList = document.getElementById("audioTrack");
+    const cameraList = document.getElementById("videoTrack");
+    console.log('chatRoom.html');
+
+    getDevices();
 
     myFace.addEventListener("click", () => {
         myFace.classList.toggle("enlarged");
@@ -37,6 +46,18 @@
             myFace.classList.remove("enlarged");
         }, 5000);
     });
+
+    audioList.addEventListener("input", () => {
+        changeInputDevice();
+    })
+    cameraList.addEventListener("input", () => {
+        changeInputDevice();
+    })
+
+    function changeInputDevice(){
+        getMedia(cameraList.value, audioList.value);
+        createOffer();
+    }
 
     history.replaceState({}, null, location.pathname);
 
@@ -50,9 +71,9 @@
             showToast("음소거");
             document.getElementById("mute-img").src = "/img/unmuted.png";
         }
+        mute = !mute;
         CreateOffer();
 
-        mute = !mute;
     }
 
     function toggleCamera() {
@@ -65,19 +86,9 @@
             showToast("카메라 끄기");
             document.getElementById("camera-img").src = "/img/cameraOn.png";
         }
-        CreateOffer();
-
         cameraOff = !cameraOff;
-    }
+        createOffer();
 
-    function endCall() {
-        /*showToast("통화 종료");
-        myPeerConnection.close();
-
-        send({event:'closed'});*/
-
-        //socket.close();
-        location.href = "/";
     }
 
     function showToast(msg) {
