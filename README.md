@@ -1,6 +1,6 @@
 # WebVideoChat
 1:1 Video Chat using WebRTC
-### use Basic Javascript
+-- use Basic Javascript
 
 # WebRTC Function
 - Mute
