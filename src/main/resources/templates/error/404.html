@@ -6,9 +6,18 @@
 </head>
 <body>
     <h1>404</h1>
-    <h2>3초후 홈으로 돌아갑니다.</h2>
+        <h2 style="display: inline-block"><span id="countdown">3</span></h2>
+        <h2 style="display: inline-block">초 후 홈으로 돌아갑니다.</h2>
     <script>
-        setTimeout(location.href="/",3000);
+        let count = 1;
+        const countdown = document.getElementById("countdown");
+        setInterval(()=>{
+            if(count === 3){
+                location.href = "/";
+            }
+            countdown.innerText = 3 - count;
+            count++;
+        },1000);
     </script>
 </body>
 </html>
