@@ -50,6 +50,8 @@
             showToast("음소거");
             document.getElementById("mute-img").src = "/img/unmuted.png";
         }
+        CreateOffer();
+
         mute = !mute;
     }
 
@@ -63,17 +65,19 @@
             showToast("카메라 끄기");
             document.getElementById("camera-img").src = "/img/cameraOn.png";
         }
+        CreateOffer();
+
         cameraOff = !cameraOff;
     }
 
     function endCall() {
-        showToast("통화 종료");
+        /*showToast("통화 종료");
         myPeerConnection.close();
 
-        send({event:'closed'});
+        send({event:'closed'});*/
 
         //socket.close();
-        //location.href = "/";
+        location.href = "/";
     }
 
     function showToast(msg) {
@@ -90,8 +94,6 @@
         }, 3000); // 3000 milliseconds 후에 숨김
     }
 
-    //비디오 채팅 초기화
-    initVideoChat(myFace, peerFace, roomCode);
 </script>
 </body>
 </html>

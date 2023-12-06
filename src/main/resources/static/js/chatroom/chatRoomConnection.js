@@ -33,7 +33,7 @@ myPeerConnection.addEventListener("track", (event) =>{
 // 소켓 이벤트
 socket.onopen = function() {
     console.log("소켓 연결");
-    createOffer();
+    getMediaNCreateOffer();
 };
 socket.onclose = (e) =>{
     console.log('소켓 닫힘');
@@ -149,22 +149,26 @@ async function getMedia() {
 }
 
 // 연결실행
-async function createOffer() {
+async function getMediaNCreateOffer() {
 
     await getMedia();
     // getMedia에서 가져온 audio, video 트랙을 myPeerConnection에 등록해요
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream));
 
+    createOffer();
+}
+
+async function createOffer(){     //현재 트랙 상태값에대한 값 송신
     // RTC객체에 미디어 담아서 offer 생성
     var offer = await myPeerConnection.createOffer();
-    
+
     // offer 전송
     console.log("오퍼전송");
     await send({
         event: "offer",
         data: offer
     })
-    
-    //offer 로컬디스크립션 등록(등록시 onicecandidate 이벤트 호출)
+
+    // offer 로컬디스크립션 등록(등록시 onicecandidate 이벤트 호출)
     myPeerConnection.setLocalDescription(offer);
 }
