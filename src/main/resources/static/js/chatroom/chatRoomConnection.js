@@ -25,7 +25,8 @@ myPeerConnection.onicecandidate = event => {
 }
 // 피어에서 track을 받아올 때 호출
 myPeerConnection.addEventListener("track", (event) =>{
-    peerFace.srcObject = event.streams[0];
+    //peerFace.srcObject = event.streams[0];
+    peerFace.srcObject.addTrack(event.track);
 });
 
 // 소켓 이벤트
